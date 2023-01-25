@@ -1,0 +1,5 @@
+application:
+  app-name: SpringPractice
+  nested:
+    version: Second
+    port: 8080
