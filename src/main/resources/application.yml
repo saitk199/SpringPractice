@@ -3,3 +3,8 @@ application:
   nested:
     version: Second
     port: 8080
+  jasper:
+    folder: /reports/jasper_simple_practice
+    server-url: http://localhost:8080/jasperserver/
+    username: joeuser
+    password: joeuser
