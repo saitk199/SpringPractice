@@ -13,7 +13,7 @@ import static org.springframework.http.ResponseEntity.ok;
 /**
  * TODO
  *
- * @author <a href="mailto:saitek1998chita@gmail.ru">Ostrovskiy L.I.</a>
+ * @author <a href="mailto:saitek1998chita@gmail.com">Ostrovskiy L.I.</a>
  */
 @Slf4j
 @RestController
