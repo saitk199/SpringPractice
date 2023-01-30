@@ -8,5 +8,6 @@ application:
     server-url: http://localhost:8080/jasperserver
     username: joeuser
     password: joeuser
+    prefix: /rest_v2/resources
 server:
   port: 8081

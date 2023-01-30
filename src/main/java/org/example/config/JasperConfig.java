@@ -11,8 +11,14 @@ import lombok.Setter;
 @Getter
 @Setter
 public class JasperConfig {
+
     private String folder;
+
     private String serverUrl;
+
     private String username;
+
     private String password;
+
+    private String prefix;
 }
