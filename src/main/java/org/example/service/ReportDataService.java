@@ -5,7 +5,7 @@ import org.example.dto.SimpleObject;
 
 import java.util.Map;
 
-public interface ReportDataService {
-    Map<String, Object> prepareParamertMap(SimpleObject simpleObject);
-    JRDataSource prepareIterableData(SimpleObject simpleObject);
+public interface ReportDataService<T> {
+    Map<String, Object> prepareParameterMap(T dataObject);
+    JRDataSource prepareIterableData(T dataObject);
 }

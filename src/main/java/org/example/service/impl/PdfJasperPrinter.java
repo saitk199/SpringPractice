@@ -22,11 +22,11 @@ public class PdfJasperPrinter implements JasperPrinter {
     }
 
     @Override
-    public void printReport(InputStream jrprintTemplate, OutputStream resultOutputStream) {
+    public void printReport(InputStream jrprintReport, OutputStream resultOutputStream) {
         try {
-            jasperExportManager.exportToPdfStream(jrprintTemplate, resultOutputStream);
+            jasperExportManager.exportToPdfStream(jrprintReport, resultOutputStream);
         } catch (JRException e) {
-            log.error("Exception print pdf file: {}. JRException | IOException: {}", jrprintTemplate, e.getMessage());
+            log.error("Exception print pdf file: {}. JRException | IOException: {}", jrprintReport, e.getMessage());
             throw new RuntimeException("", e);
         }
     }

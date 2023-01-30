@@ -3,9 +3,9 @@ package org.example.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRDataSource;
 import org.example.client.JasperClient;
-import org.example.dto.SimpleObject;
 import org.example.enums.ReportTypeEnum;
 import org.example.service.ReportDataService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
@@ -15,34 +15,33 @@ import java.util.Map;
 @Slf4j
 @Service
 public class ReportCreator {
-    private final ReportDataService reportDataService;
     private final JasperClient jasperClient;
     private final PdfJasperPrinter pdfJasperPrinter;
     private final ExcelJasperPrinter excelJasperPrinter;
     private final HtmlJasperPrinter htmlJasperPrinter;
 
-    public ReportCreator(final ReportDataService reportDataService,
-                         final JasperClient jasperClient,
+    @Autowired
+    public ReportCreator(final JasperClient jasperClient,
                          final PdfJasperPrinter pdfJasperPrinter,
                          final ExcelJasperPrinter excelJasperPrinter,
                          final HtmlJasperPrinter htmlJasperPrinter) {
-        this.reportDataService = reportDataService;
         this.jasperClient = jasperClient;
         this.pdfJasperPrinter = pdfJasperPrinter;
         this.excelJasperPrinter = excelJasperPrinter;
         this.htmlJasperPrinter = htmlJasperPrinter;
     }
 
-    public void createReport(final ReportTypeEnum reportType,
-                             final SimpleObject simpleObject,
-                             final OutputStream resultOutputStream){
-        Map<String, Object> parametrMap = reportDataService.prepareParamertMap(simpleObject);
-        JRDataSource iterableData = reportDataService.prepareIterableData(simpleObject);
-        InputStream jrprintTemplate = jasperClient.createReport(parametrMap, iterableData);
+    public <T, D extends ReportDataService<T>> void createReport(final D dataService,
+                                                                 final ReportTypeEnum reportType,
+                                                                 final T dataObject,
+                                                                 final OutputStream resultOutputStream) {
+        Map<String, Object> parameterMap = dataService.prepareParameterMap(dataObject);
+        JRDataSource iterableData = dataService.prepareIterableData(dataObject);
+        InputStream jrprintReport = jasperClient.createReport(parameterMap, iterableData);
         switch (reportType) {
-            case PDF -> pdfJasperPrinter.printReport(jrprintTemplate, resultOutputStream);
-            case EXCEL -> excelJasperPrinter.printReport(jrprintTemplate, resultOutputStream);
-            case HTML -> htmlJasperPrinter.printReport(jrprintTemplate, resultOutputStream);
+            case PDF -> pdfJasperPrinter.printReport(jrprintReport, resultOutputStream);
+            case EXCEL -> excelJasperPrinter.printReport(jrprintReport, resultOutputStream);
+            case HTML -> htmlJasperPrinter.printReport(jrprintReport, resultOutputStream);
         }
     }
 }

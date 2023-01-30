@@ -11,9 +11,9 @@ import java.util.Map;
 
 @Slf4j
 @Service
-public class ReportDataServiceImpl implements ReportDataService {
+public class ReportDataServiceImpl implements ReportDataService<SimpleObject> {
     @Override
-    public Map<String, Object> prepareParamertMap(final SimpleObject simpleObject) {
+    public Map<String, Object> prepareParameterMap(final SimpleObject dataObject) {
         Map<String, Object> result = new HashMap<>();
         result.put("value1", "   в верхнем регистре   ");
         result.put("Parameter1", "мамка");
@@ -21,7 +21,7 @@ public class ReportDataServiceImpl implements ReportDataService {
     }
 
     @Override
-    public JRDataSource prepareIterableData(final SimpleObject simpleObject) {
+    public JRDataSource prepareIterableData(final SimpleObject dataObject) {
         return null;
     }
 }

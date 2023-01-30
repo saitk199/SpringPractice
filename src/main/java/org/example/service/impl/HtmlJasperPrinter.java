@@ -11,7 +11,7 @@ import java.io.OutputStream;
 @Service
 public class HtmlJasperPrinter implements JasperPrinter {
     @Override
-    public void printReport(InputStream jrprintTemplate, OutputStream resultOutputStream) {
+    public void printReport(InputStream jrprintReport, OutputStream resultOutputStream) {
         //TODO ???
     }
 }

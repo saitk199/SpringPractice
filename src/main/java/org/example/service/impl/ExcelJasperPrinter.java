@@ -15,15 +15,15 @@ import java.io.OutputStream;
 @Service
 public class ExcelJasperPrinter implements JasperPrinter {
     @Override
-    public void printReport(final InputStream jrprintTemplate,
+    public void printReport(final InputStream jrprintReport,
                             final OutputStream resultOutputStream) {
         try {
             JRXlsExporter exporter = new JRXlsExporter();
-            exporter.setExporterInput(new SimpleExporterInput(jrprintTemplate));
+            exporter.setExporterInput(new SimpleExporterInput(jrprintReport));
             exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(resultOutputStream));
             exporter.exportReport();
         } catch (JRException e) {
-            log.error("Exception print xls file: {}. JRException | IOException: {}", jrprintTemplate, e.getMessage());
+            log.error("Exception print xls file: {}. JRException | IOException: {}", jrprintReport, e.getMessage());
             throw new RuntimeException("", e);
         }
     }

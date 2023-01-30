@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.dto.SimpleObject;
 import org.example.enums.ReportTypeEnum;
 import org.example.service.impl.ReportCreator;
+import org.example.service.impl.ReportDataServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,9 +26,13 @@ import static org.springframework.http.ResponseEntity.ok;
 public class JasperController {
     private final ReportCreator jasperCreator;
 
+    private final ReportDataServiceImpl reportDataService;
+
     @Autowired
-    public JasperController(final ReportCreator jasperCreator) {
+    public JasperController(final ReportCreator jasperCreator,
+                            final ReportDataServiceImpl reportDataService) {
         this.jasperCreator = jasperCreator;
+        this.reportDataService = reportDataService;
     }
 
     @GetMapping(value = "/report/{reportType}")
@@ -38,7 +43,7 @@ public class JasperController {
             case EXCEL -> pathResultFile += ".xls";
         }
         try (OutputStream outputStream = new FileOutputStream(pathResultFile)) {
-            jasperCreator.createReport(reportType, new SimpleObject(), outputStream);
+            jasperCreator.createReport(reportDataService, reportType, new SimpleObject(), outputStream);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
