@@ -37,11 +37,7 @@ public class JasperController {
 
     @GetMapping(value = "/report/{reportType}")
     public ResponseEntity<Void> createReport(@PathVariable("reportType") final ReportTypeEnum reportType) {
-        String pathResultFile = "C:/reports/simple-report-result";
-        switch (reportType) {
-            case PDF -> pathResultFile += ".pdf";
-            case EXCEL -> pathResultFile += ".xls";
-        }
+        String pathResultFile = "C:/reports/simple-report-result" + "." + reportType.getFileType();
         try (OutputStream outputStream = new FileOutputStream(pathResultFile)) {
             jasperCreator.createReport(reportDataService, reportType, new SimpleObject(), outputStream);
         } catch (IOException e) {

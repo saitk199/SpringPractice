@@ -1,7 +1,16 @@
 package org.example.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jasperreports.engine.JRAbstractExporter;
 import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.export.HtmlExporter;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleXmlExporterOutput;
 import org.example.client.JasperClient;
 import org.example.enums.ReportTypeEnum;
 import org.example.service.ReportDataService;
@@ -16,19 +25,10 @@ import java.util.Map;
 @Service
 public class ReportCreator {
     private final JasperClient jasperClient;
-    private final PdfJasperPrinter pdfJasperPrinter;
-    private final ExcelJasperPrinter excelJasperPrinter;
-    private final HtmlJasperPrinter htmlJasperPrinter;
 
     @Autowired
-    public ReportCreator(final JasperClient jasperClient,
-                         final PdfJasperPrinter pdfJasperPrinter,
-                         final ExcelJasperPrinter excelJasperPrinter,
-                         final HtmlJasperPrinter htmlJasperPrinter) {
+    public ReportCreator(final JasperClient jasperClient) {
         this.jasperClient = jasperClient;
-        this.pdfJasperPrinter = pdfJasperPrinter;
-        this.excelJasperPrinter = excelJasperPrinter;
-        this.htmlJasperPrinter = htmlJasperPrinter;
     }
 
     public <T, D extends ReportDataService<T>> void createReport(final D dataService,
@@ -39,9 +39,39 @@ public class ReportCreator {
         JRDataSource iterableData = dataService.prepareIterableData(dataObject);
         InputStream jrprintReport = jasperClient.createReport(parameterMap, iterableData);
         switch (reportType) {
-            case PDF -> pdfJasperPrinter.printReport(jrprintReport, resultOutputStream);
-            case EXCEL -> excelJasperPrinter.printReport(jrprintReport, resultOutputStream);
-            case HTML -> htmlJasperPrinter.printReport(jrprintReport, resultOutputStream);
+            case PDF -> {
+                JRPdfExporter jrPdfExporter = new JRPdfExporter();
+                printReport(jrPdfExporter, jrprintReport, resultOutputStream);
+            }
+            case EXCEL -> {
+                JRXlsExporter jrXlsExporter = new JRXlsExporter();
+                printReport(jrXlsExporter, jrprintReport, resultOutputStream);
+            }
+            case HTML -> {
+                HtmlExporter htmlExporter = new HtmlExporter();
+                printReport(htmlExporter, jrprintReport, resultOutputStream);
+            }
+            case DOCX -> {
+                JRDocxExporter jrDocxExporter = new JRDocxExporter();
+                printReport(jrDocxExporter, jrprintReport, resultOutputStream);
+            }
+        }
+    }
+
+    private <E extends JRAbstractExporter> void printReport(final E exporter,
+                                                            final InputStream jrprintReport,
+                                                            final OutputStream resultOutputStream) {
+        try {
+            if (exporter instanceof HtmlExporter) {
+                exporter.setExporterOutput(new SimpleXmlExporterOutput(resultOutputStream));
+            } else {
+                exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(resultOutputStream));
+            }
+        exporter.setExporterInput(new SimpleExporterInput(jrprintReport));
+        exporter.exportReport();
+        } catch (JRException e) {
+            log.error("Error print jasper report");
+            throw new RuntimeException("Error print jasper report", e);
         }
     }
 }

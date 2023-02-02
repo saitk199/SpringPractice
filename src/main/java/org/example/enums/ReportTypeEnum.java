@@ -1,10 +1,17 @@
 package org.example.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum ReportTypeEnum {
     PDF("pdf"),
     EXCEL("xlsx"),
-    HTML("html");
+    HTML("html"),
+    DOCX("docx");
 
-    ReportTypeEnum(final String type) {
+    private final String fileType;
+
+    ReportTypeEnum(final String fileType) {
+        this.fileType = fileType;
     }
 }
